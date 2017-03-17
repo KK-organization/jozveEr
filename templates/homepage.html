@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+{#    <meta http-equiv="refresh" content="0; url=/home/">#}
     <title>home page</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
@@ -97,6 +98,7 @@
                 <input  required type="text" placeholder="Name" name = "name"        style="border-radius: 5px; font-size: 15px; width : 92%; margin-bottom : 5px; margin-top: 30px; border-style: solid; border-color: darkgray; border-width: 0.5px; color: black; background-color: white; padding: 10px"><br>
                 <textarea  placeholder="Describtion...(optional)" name = "desc"         style="text-align: left; border-radius: 5px; font-size: 15px; width : 92%; height: 80px; margin-bottom : 5px; border-style: solid; border-color: darkgray; border-width: 0.5px; color: black; background-color: white; padding: 10px"></textarea><br>
                 <input required type="file" name="file" style="margin-bottom: 30px;">
+                <input style="display: none;" type="text" name="user" value={{ user }}>
                 <button style="border-radius: 5px; font-size: 15px; width : 100%; color: white; background-color: rgba(0, 212, 202, 0.71); margin-bottom : 20px; border-style: hidden; border-color: darkgray; border-width: 0.5px; padding: 10px;"  type="submit">Upload</button>
             </form>
             </div>
@@ -104,7 +106,7 @@
                 Latest uploads<br><br>
             {% for file in files %}
                 <div style="background-color: white; border: solid darkgray; border-width: 0.5px; padding: 10px; margin: 5px; border-radius: 10px;">
-                Book name   : {{ file.filename }}<br>
+                Book name   : {{ file.name }}<br>
                 Describtion : {{ file.describtion }} <br>
                 uploaded by : {{ file.username }}  <br>
                 <a href="/media/{{ file.link }}" download><button style="border-radius: 5px; font-size: 12px; color: white; background-color: rgba(0, 212, 80, 0.71); margin : 5px; border-style: hidden; border-color: darkgray; border-width: 0.5px; padding: 5px;"  type="button">Download!</button></a>

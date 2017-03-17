@@ -1,15 +1,16 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest
+from django.shortcuts import render,redirect
+from django.http import HttpResponse, HttpRequest,HttpResponseRedirect
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from .models import User, Note
 
-def homepage(request, name):
+
+def homepage(request, user):
     #showing latest downloads
     files = Note.objects.all()
     context = {
-        'files' : files,
-        'name' : name
+        'files': files,
+        'user': user
     }
     return render(request, "homepage.html", context)
 
@@ -25,21 +26,15 @@ def signup_attempt(request):
         return render(request, "signuppage.html", errormessage)
     else:
         newuser = User.objects.create(first_name=request.POST["fname"], last_name=request.POST["lname"],useremail=request.POST["email"], username=request.POST["user"],password=request.POST["passw"])
-    #    if len(newuser.username) < 5 or len(user.username) > 32:
-    #        errormessage = {"error": "Username must be 5-32 characters"}
-    #        return render(request, "signuppage.html", errormessage)
-    #    elif len(newuser.password) < 5 or len(user.password) > 32:
-    #        errormessage = {"error": "Password must be 5-32 characters"}
-    #        return render(request, "signuppage.html", errormessage)
         newuser.save()
-        return homepage(request, newuser.first_name)
+        return homepage(request, newuser.username)
 
 
 def signin_attempt(request):
     if User.objects.filter(username=request.POST['user']).exists():
         newuser = User.objects.filter(username=request.POST['user']).get()
         if request.POST['passw'] == newuser.password:
-            return homepage(request, newuser.first_name)
+            return homepage(request, newuser.username)
         else:
             errormessage = {"error": "Your Password is incorrect"}
             return render(request, "signinpage.html", errormessage)
@@ -57,5 +52,6 @@ def signuppage(request):
 
 
 def upload(request):
-    newfile = Note.objects.create(link=request.FILES.get('file'), describtion =request.POST['desc'], username=User.objects.filter(username='adelante').get(), name=request.POST['name'])
+    newfile = Note.objects.create(link=request.FILES.get('file'), describtion =request.POST['desc'], username=User.objects.filter(username=request.POST['user']).get(), name=request.POST['name'])
     return homepage(request, newfile.username)
+
