@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KK</title>
+</head>
+<body style="background-image: linear-gradient(to right,rgba(0, 212, 80, 0.71), rgba(0, 212, 202, 0.71) )" >
+    <div style=" margin-top: 130px; margin-left: 380px; margin-right: 380px; padding:20px; background-color: darkslategray; border-radius: 15px; border-style: hidden;">
+        <div style="display: table-cell; border-radius: 10px; border-style: hidden; width : 300px; background-color: whitesmoke;  padding: 25px;" >
+            <form style="font-family:Arial" method="POST", action="/signinattempt/">
+                {% csrf_token %}
+                <input  required type="text" placeholder="Username" name = "user"        style="border-radius: 5px; font-size: 15px; width : 93%; margin-bottom : 5px; border-style: solid; border-color: darkgray; border-width: 0.5px; color: black; background-color: white; padding: 10px"><br>
+                <input  required type="password" placeholder="Password" name = "passw"   style="border-radius: 5px; font-size: 15px; width : 93%; margin-bottom : 10px; border-style: solid; border-color: darkgray; border-width: 0.5px; color: black; background-color: white; padding: 10px"><br>
+                <label style="font-size: 13px"><input type="checkbox"           style="margin-bottom: 10px" > Remember me</label>
+                {% if error %}
+                    <div style="padding:5px; border:2px solid; margin-bottom: 5px; border-bottom-style:hidden; border-right-style: hidden; border-top-style: hidden; border-left-color: red; font-size: 13px; color: red" >
+                        {{ error }}
+                    </div>
+                {% endif%}
+                <button    style="border-radius: 5px; font-size: 15px; width : 100%; color: white; background-color: rgba(0, 212, 202, 0.71); margin-bottom : 20px; border-style: hidden; border-color: darkgray; border-width: 0.5px; padding: 10px;"  type="submit">Sign in</button>
+                <br>Don't have an account yet? <a href="/signup/">Sign up!</a>
+            </form>
+        </div>
+        <div style="display: table-cell; border-style: hidden; width : 300px; background-color: transparent; margin: auto; padding: 25px;" >
+            <h2 style="color: white">        Welcome to KK!</h2>
+            <br>
+            <h4 style="color: white">KK is a fun and easy way to blah blah<br> with KK you can blah, blah, and even blah!<br>sign up for for free today! and lets start blahblahing</h4>
+        </div>
+    </div>
+    <br>
+    <footer></footer>
+</body>
+</html>

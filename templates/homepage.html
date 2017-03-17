@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>home page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        .navbar {
+            background-color: #097087;
+            overflow: hidden;
+            width: 100%;
+            cursor: default;
+        }
+
+        .navbar a{
+            float: left;
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding : 14px 16px;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .navbar a:hover{
+            background-color: #032830;
+            color: #f2f2f2;
+        }
+
+        ul{
+            list-style-type: none;
+            margin:0;
+            padding:0;
+            width: 10%;
+            background-color: #032830;
+            color: antiquewhite;
+            position: fixed;
+            overflow: auto;
+            opacity:100;
+            cursor: pointer;
+            top: 57px;
+        }
+
+        li a{
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding:14px 16px;
+            font-size:17px;
+        }
+
+        li a:hover{
+            background-color: #097087;
+            color: black;
+        }
+
+        li i:hover{
+            background-color: #097087;
+        }
+
+    </style>
+</head>
+<body style="background-image: linear-gradient(to right,rgba(0, 212, 80, 0.71), rgba(0, 212, 202, 0.71) ); padding:0px; margin:0px;" >
+    <div id="sidebar" style="display: none">
+        <ul>
+            <li><a>uploads</a></li>
+            <li><a>profile</a></li>
+            <li><a>settings</a></li>
+            <li><a>log out</a></li>
+        </ul>
+    </div>
+    <div class="navbar">
+        <a onclick="side_toggle()"><i class="material-icons">menu</i></a>
+        <div style="border-radius: 10em; float: right; margin: 10px; height: 36px; border: solid 1px #ccc; background-color: white">
+            <form id="myForm">
+                <a href="javascript:{}" style="float: right; padding: 5px; color: darkgray" onclick="document.getElementById('myForm').submit(); return false;"><i class="material-icons">search</i></a>
+                <input type="text" placeholder="Search..." name="search" style="border-style: hidden; float: right; padding: 10px; padding-left: 0px; margin-left: 15px; ">
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+    function side_toggle(){
+        if (document.getElementById('sidebar').style.display == "block")
+            document.getElementById('sidebar').style.display = "none";
+        else
+            document.getElementById('sidebar').style.display = "block";
+    }
+    </script>
+
+    <div style="top: 55px; left:0px; width: 100%; border-style: hidden;">
+        <div style="float:left; width: 20%; margin-left: 10px; background-color: whitesmoke; padding: 10px; z-index: 10; margin-top: 10px; border-radius: 10px;">
+            <form method="post" action="/uploadafile/" enctype="multipart/form-data">
+                {% csrf_token %}
+                Upload!
+                <input  required type="text" placeholder="Name" name = "name"        style="border-radius: 5px; font-size: 15px; width : 92%; margin-bottom : 5px; margin-top: 30px; border-style: solid; border-color: darkgray; border-width: 0.5px; color: black; background-color: white; padding: 10px"><br>
+                <textarea  placeholder="Describtion...(optional)" name = "desc"         style="text-align: left; border-radius: 5px; font-size: 15px; width : 92%; height: 80px; margin-bottom : 5px; border-style: solid; border-color: darkgray; border-width: 0.5px; color: black; background-color: white; padding: 10px"></textarea><br>
+                <input required type="file" name="file" style="margin-bottom: 30px;">
+                <button style="border-radius: 5px; font-size: 15px; width : 100%; color: white; background-color: rgba(0, 212, 202, 0.71); margin-bottom : 20px; border-style: hidden; border-color: darkgray; border-width: 0.5px; padding: 10px;"  type="submit">Upload</button>
+            </form>
+            </div>
+        <div style="float:left;  background-color: whitesmoke; z-index: 10; width: 50%; margin-left: 10px; top:0px; padding:10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
+                Latest uploads<br><br>
+            {% for file in files %}
+                <div style="background-color: white; border: solid darkgray; border-width: 0.5px; padding: 10px; margin: 5px; border-radius: 10px;">
+                Book name   : {{ file.filename }}<br>
+                Describtion : {{ file.describtion }} <br>
+                uploaded by : {{ file.username }}  <br>
+                <a href="/media/{{ file.link }}" download><button style="border-radius: 5px; font-size: 12px; color: white; background-color: rgba(0, 212, 80, 0.71); margin : 5px; border-style: hidden; border-color: darkgray; border-width: 0.5px; padding: 5px;"  type="button">Download!</button></a>
+                </div>
+            {% endfor %}
+
+
+        </div>
+    </div>
+</body>
+</html>
