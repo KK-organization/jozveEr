@@ -1,6 +1,7 @@
 from django.db import models
 from django.dispatch.dispatcher import receiver
 from django.db.models.signals import post_delete
+from django.utils.crypto import get_random_string
 
 # Create your models here.
 
@@ -10,10 +11,11 @@ class User(models.Model):
     useremail = models.CharField(max_length=50, default="")
     username = models.CharField(max_length=50, default="")
     password = models.CharField(max_length=50, default="")
+    token = models.CharField(max_length=50, default="")
 
 
     def __str__(self):
-        return "{} : {}".format(self.first_name,self.username)
+        return self.username
 
 
 class Note(models.Model):

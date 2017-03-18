@@ -3,16 +3,21 @@ from django.http import HttpResponse, HttpRequest,HttpResponseRedirect
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from .models import User, Note
+from uuid import uuid4
 
-
-def homepage(request, user):
+def homepage(request, token):
     #showing latest downloads
-    files = Note.objects.all()
-    context = {
-        'files': files,
-        'user': user
-    }
-    return render(request, "homepage.html", context)
+    user = User.objects.filter(token=token).get()
+    if user:
+        files = Note.objects.all()
+        context = {
+            'files': files,
+            'user': user
+        }
+        return render(request, "homepage.html", context)
+    else:
+        context = {'error': 'sorry you shod log in again!'}
+        return render(request, "homepage.html", context)
 
 
 @csrf_exempt
@@ -25,16 +30,16 @@ def signup_attempt(request):
         errormessage = {"error":"Username already exists"}
         return render(request, "signuppage.html", errormessage)
     else:
-        newuser = User.objects.create(first_name=request.POST["fname"], last_name=request.POST["lname"],useremail=request.POST["email"], username=request.POST["user"],password=request.POST["passw"])
+        newuser = User.objects.create(first_name=request.POST["fname"], last_name=request.POST["lname"],useremail=request.POST["email"], username=request.POST["user"],password=request.POST["passw"], token = uuid4())
         newuser.save()
-        return homepage(request, newuser.username)
+        return redirect('/home/' + newuser.token)
 
 
 def signin_attempt(request):
     if User.objects.filter(username=request.POST['user']).exists():
         newuser = User.objects.filter(username=request.POST['user']).get()
         if request.POST['passw'] == newuser.password:
-            return homepage(request, newuser.username)
+            return redirect('/home/'+newuser.token)
         else:
             errormessage = {"error": "Your Password is incorrect"}
             return render(request, "signinpage.html", errormessage)
@@ -52,6 +57,7 @@ def signuppage(request):
 
 
 def upload(request):
-    newfile = Note.objects.create(link=request.FILES.get('file'), describtion =request.POST['desc'], username=User.objects.filter(username=request.POST['user']).get(), name=request.POST['name'])
-    return homepage(request, newfile.username)
-
+    if User.objects.filter(username=request.POST['user']).get():
+        user = User.objects.filter(username=request.POST['user']).get()
+        Note.objects.create(link=request.FILES.get('file'), describtion =request.POST['desc'], username=user, name=request.POST['name'], prof='shit')
+        return redirect('/home/' + user.token)
