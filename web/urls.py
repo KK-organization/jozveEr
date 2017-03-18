@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^signin/',views.signinpage),
     url(r'^signup/',views.signuppage),
     url(r'^uploadafile/',views.upload),
+    url(r'^signout/(?P<token>.+)/', views.signout)
 ]
 
 if settings.DEBUG:

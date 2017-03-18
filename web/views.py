@@ -8,7 +8,7 @@ from uuid import uuid4
 def homepage(request, token):
     #showing latest downloads
     user = User.objects.filter(token=token).get()
-    if user:
+    if user.signedin == 'True':
         files = Note.objects.all()
         context = {
             'files': files,
@@ -16,8 +16,7 @@ def homepage(request, token):
         }
         return render(request, "homepage.html", context)
     else:
-        context = {'error': 'sorry you shod log in again!'}
-        return render(request, "homepage.html", context)
+        return redirect('/signin/')
 
 
 @csrf_exempt
@@ -30,15 +29,18 @@ def signup_attempt(request):
         errormessage = {"error":"Username already exists"}
         return render(request, "signuppage.html", errormessage)
     else:
-        newuser = User.objects.create(first_name=request.POST["fname"], last_name=request.POST["lname"],useremail=request.POST["email"], username=request.POST["user"],password=request.POST["passw"], token = uuid4())
+        newuser = User.objects.create(first_name=request.POST["fname"], last_name=request.POST["lname"],useremail=request.POST["email"], username=request.POST["user"],password=request.POST["passw"], token=uuid4(), signedin= 'True')
         newuser.save()
-        return redirect('/home/' + newuser.token)
+        return redirect('/home/' + str(newuser.token))
 
 
 def signin_attempt(request):
     if User.objects.filter(username=request.POST['user']).exists():
         newuser = User.objects.filter(username=request.POST['user']).get()
         if request.POST['passw'] == newuser.password:
+            newuser.signin()
+            newuser.save()
+            print(newuser.signedin)
             return redirect('/home/'+newuser.token)
         else:
             errormessage = {"error": "Your Password is incorrect"}
@@ -57,7 +59,15 @@ def signuppage(request):
 
 
 def upload(request):
-    if User.objects.filter(username=request.POST['user']).get():
+    if User.signedin == 'True':
         user = User.objects.filter(username=request.POST['user']).get()
         Note.objects.create(link=request.FILES.get('file'), describtion =request.POST['desc'], username=user, name=request.POST['name'], prof='shit')
         return redirect('/home/' + user.token)
+    else:
+        render(request, "signinpage.html")
+
+def signout(request, token):
+    user = User.objects.filter(token=token).get()
+    user.signout()
+    user.save()
+    return redirect('/signin/')

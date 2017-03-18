@@ -1,7 +1,6 @@
 from django.db import models
 from django.dispatch.dispatcher import receiver
 from django.db.models.signals import post_delete
-from django.utils.crypto import get_random_string
 
 # Create your models here.
 
@@ -12,7 +11,13 @@ class User(models.Model):
     username = models.CharField(max_length=50, default="")
     password = models.CharField(max_length=50, default="")
     token = models.CharField(max_length=50, default="")
+    signedin = models.CharField(max_length=10, default="")
 
+    def signin(self):
+        self.signedin = 'True'
+
+    def signout(self):
+        self.signedin='False'
 
     def __str__(self):
         return self.username
